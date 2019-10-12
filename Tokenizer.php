@@ -9,12 +9,12 @@ include_once 'Token.php';
 
         public function __construct($s)
         {
-            $this->e = $this->s.str_split($s);
+            $this->e = str_split($s);
             $this->i = 0;
         }
         public function nextToken(){
             
-            while($this->i < count($this->e) && strpos("\n\t\r",$this->e[$this->i]) >= 0){
+            while($this->i < count($this->e) && (strpos("\n\t\r",$this->e[$this->i]) >= 0)){
                 $this->i++;
             }
 
@@ -23,7 +23,7 @@ include_once 'Token.php';
             }
 
             $inputString = "";
-            while ( $this->i < count($this->e) && strpos("0123456789", $this->e[$this->i]) >=0) {
+            while ( $this->i < count($this->e) && (strpos("0123456789", $this->e[$this->i]) >=0)) {
                 $inputString += $this->e[$this->i++];
             }
             
