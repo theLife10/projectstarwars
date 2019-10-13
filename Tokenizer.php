@@ -1,6 +1,9 @@
 <?php
-include_once 'TokenType.php';
-include_once 'Token.php';
+include_once('Token.php');
+include_once('Tokenizer.php');
+include_once('TokenType.php');
+
+
     class Tokenizer 
     {
         private $e = array();
@@ -14,7 +17,7 @@ include_once 'Token.php';
         }
         public function nextToken(){
             
-            while($this->i < count($this->e) && (strpos("\n\t\r",$this->e[$this->i]) >= 0)){
+            while($this->i < count($this->e) && (strpos("\n\t\r",$this->e[$this->i]) !== false )){
                 $this->i++;
             }
 
@@ -23,12 +26,12 @@ include_once 'Token.php';
             }
 
             $inputString = "";
-            while ( $this->i < count($this->e) && (strpos("0123456789", $this->e[$this->i]) >=0)) {
-                $inputString += $this->e[$this->i++];
+            while ( $this->i < count($this->e) && (strpos("0123456789", $this->e[$this->i]) !== false)) {
+                $inputString .= $this->e[$this->i++];
             }
             
-            if(!"" == $inputString){
-                return new Token(TokenType::EOF,"");
+            if("" !== $inputString){
+                return new Token(TokenType::INT,$inputString);
             }
 
             switch($this->e[$this->i++]){

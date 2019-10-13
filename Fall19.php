@@ -1,9 +1,9 @@
 <?php
 
-require_once('Token.php');
-require_once('Tokenizer.php');
-require_once('TokenType.php');
-require_once('EvalExprException.php');
+include_once('Token.php');
+include_once('Tokenizer.php');
+include_once('TokenType.php');
+include_once('EvalExprException.php');
 
      $currentToken;
     $t;
@@ -30,38 +30,39 @@ require_once('EvalExprException.php');
     $inputFile .= $inputLine . PHP_EOL;
 }
 $t = new Tokenizer($inputFile);
-echo $header.$EOL;
+echo $header.PHP_EOL;
 $currentToken = $t->nextToken();
 $exp_num = 0;
 
 while($currentToken->type != TokenType::EOF){
-  echo "expression " . ++$exp_num . $EOL;
+  echo "expression " . ++$exp_num . PHP_EOL;
 
   try{
     $result = evalCompleteExpr();
-    echo "Expression Result ". $EOL;
-    echo $result . $EOL ; 
+    echo "Expression Result ". PHP_EOL;
+    echo $result . PHP_EOL ; 
   }
-  catch(EvalSectionException $ex){
-    while ($currentToken -> type != TokenType::RSQUAREBRACKET &&
+  catch(EvalExprException $ex){
+      while ($currentToken -> type != TokenType::RSQUAREBRACKET &&
     $currentToken->type != TokenType::LSQUAREBRACKET &&
     $currentToken->type != TokenType::EOF){
       $currentToken = $t->nextToken();
 
     }
+    
     if($currentToken->type == TokenType::RSQUAREBRACKET){
       $currentToken=$t->nextToken();
     }
   }
 }
-echo $footer . $EOL ;
+echo $footer . PHP_EOL ;
 
 function evalCompleteExpr(){
   global $currentToken,$oneIndent,$t,$result;
-  if($currentToken->type != TokeType::LSQUAREBRACKET){
-    throw new EvalExprException("The expression must be proceeded \"[ \"");
+  if($currentToken->type != TokenType::LSQUAREBRACKET){
+      throw new EvalExprException("The expression must be proceeded \"[\"");
   }
-  echo "[".$EOL;
+  echo "[".PHP_EOL;
 
   $currentToken = $t->nextToken();
   $result = evalExpression($oneIndent);
@@ -69,7 +70,7 @@ function evalCompleteExpr(){
   if($currentToken->type != TokenType::RSQUAREBRACKET){
     throw new EvalExprException("The expression must be proceeded \"] \"");
   }
-  echo "]".$EOL;
+  echo "]".PHP_EOL;
 
   $currentToken = $t->nextToken();
   return $result;
@@ -77,7 +78,7 @@ function evalCompleteExpr(){
 
 function evalExpression($indent){
   global $currentToken, $oneIndent, $t, $result;
-  $result = evalTerm(indent);
+  $result = evalTerm($indent);
         while ($currentToken->type == TokenType::PLUS
                 || $currentToken->type == TokenType::MINUS) {
             switch ($currentToken->type) {
@@ -99,7 +100,7 @@ function evalExpression($indent){
   function evalTerm($indent) {
     global $currentToken, $oneIndent, $t, $result;
   // <term> : <factor> ( '.' <factor> )*
-   $result = evalFactor(indent);
+   $result = evalFactor($indent);
   while ($currentToken->type == TokenType::CONCAT) {
       $currentToken = $t->nextToken();
       echo $indent.".";
@@ -117,7 +118,7 @@ function computeConcat($a,$b){
  function evalFactor($indent) {
   // <factor> : INT | '(' <expression> ')'
   global $currentToken, $oneIndent, $t, $result;
-   $result;
+   
   if ($currentToken->type == TokenType::INT){
       $result = intval($currentToken->value);
       echo $indent.$result;
