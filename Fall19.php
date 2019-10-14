@@ -114,7 +114,7 @@ function evalExpression($indent){
 function computeConcat($a,$b){
   if ($a==0) return $b;
   if ($b==0) return $a*10;
-  return $b+$a*((int)(round(pow(10, strlen((string)$b)))));  
+  return $b+($a*(round(pow(10, strlen(strval($b))))));  
 }
 
  function evalFactor($indent) {

@@ -17,7 +17,7 @@ include_once('TokenType.php');
         }
         public function nextToken(){
             
-            while($this->i < count($this->e) && (strpos("\n\t\r",$this->e[$this->i]) !== false )){
+            while($this->i < count($this->e) && ctype_space($this->e[$this->i])){
                 $this->i++;
             }
 
@@ -26,7 +26,7 @@ include_once('TokenType.php');
             }
 
             $inputString = "";
-            while ( $this->i < count($this->e) && (strpos("0123456789", $this->e[$this->i]) !== false)) {
+            while ( $this->i < count($this->e) && is_numeric($this->e[$this->i])) {
                 $inputString .= $this->e[$this->i++];
             }
             
