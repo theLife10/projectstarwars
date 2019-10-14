@@ -11,6 +11,8 @@ include_once('EvalExprException.php');
      $EOL = PHP_EOL;
 
     $inputSource = "http://localhost/project1/fall19Testing.txt";
+    
+    //$inputSource = "http://cssrvlab01.utep.edu/classes/cs5339/jdgarcia9/test.txt";
 
     $output = file($inputSource);
 
@@ -83,14 +85,14 @@ function evalExpression($indent){
                 || $currentToken->type == TokenType::MINUS) {
             switch ($currentToken->type) {
                 case TokenType::PLUS:
-                    echo $indent."+";
+                    echo $indent."+".PHP_EOL;
                     $currentToken = $t->nextToken();
-                    $result += evalTerm($indent);
+                    $result += evalTerm($indent)-2;
                     break;
                 case TokenType::MINUS:
                     $currentToken = $t->nextToken();
-                    echo $indent."-";
-                    $result = abs($result-evalTerm($indent));
+                    echo $indent."-".PHP_EOL;
+                    $result = abs($result-evalTerm($indent))+2;
                     break;
             }
         }
@@ -103,7 +105,7 @@ function evalExpression($indent){
    $result = evalFactor($indent);
   while ($currentToken->type == TokenType::CONCAT) {
       $currentToken = $t->nextToken();
-      echo $indent.".";
+      echo $indent.".".PHP_EOL;
       $result = computeConcat($result,evalFactor($indent));           
   }
   return $result;
@@ -112,7 +114,7 @@ function evalExpression($indent){
 function computeConcat($a,$b){
   if ($a==0) return $b;
   if ($b==0) return $a*10;
-  return (int)$b+$a*(round(pow(10, strlen((string)$b))));  
+  return $b+$a*((int)(round(pow(10, strlen((string)$b)))));  
 }
 
  function evalFactor($indent) {
@@ -121,18 +123,18 @@ function computeConcat($a,$b){
    
   if ($currentToken->type == TokenType::INT){
       $result = intval($currentToken->value);
-      echo $indent.$result;
+      echo $indent.$result.PHP_EOL;
       $currentToken = $t->nextToken();
       return $result;
   }
   if ($currentToken->type != TokenType::LPAREN)
       throw new EvalExprException("Integer or Left parenthesis expected");
-  echo $indent."(";
+  echo $indent."(".PHP_EOL;
   $currentToken = $t->nextToken();
   $result = evalExpression($oneIndent.$indent);
   if ($currentToken->type != TokenType::RPAREN)
       throw new EvalExprException("Right parenthesis expected");
-  echo $indent.")";
+  echo $indent.")".PHP_EOL;
   $currentToken = $t->nextToken();
   return $result;
 }
